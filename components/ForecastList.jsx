@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
+import {
+	getGridPoint,
+	getForecastData,
+} from "../requests/weather.requests";
 
 export default function ForecastList() {
 	// Similar to useHistory()
@@ -31,6 +35,10 @@ export default function ForecastList() {
 	]);
 
 	const [location, setLocation] = useState();
+	useEffect(() => {
+		getLocation();
+	}, []);
+
 	const getLocation = async () => {
 		let { status } =
 			await Location.requestForegroundPermissionsAsync();
@@ -44,8 +52,21 @@ export default function ForecastList() {
 		setLocation(currentLocation);
 	};
 
+	useEffect(() => {
+		if (location && location.coords) {
+			getWeatherData();
+		}
+	}, [location]);
+
+	const getWeatherData = async () => {
+		let forecastUrl = await getGridPoint(location);
+		let forecastData = await getForecastData(forecastUrl);
+		setForecast(forecastData);
+	};
+
 	return (
 		<View style={{ height: "100%" }}>
+			{/* <Text>{JSON.stringify(location)}</Text> */}
 			{/* Similar to .map to display data */}
 			<FlatList
 				data={forecast}

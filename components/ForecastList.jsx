@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 export default function ForecastList() {
 	// Similar to useHistory()
@@ -28,6 +29,20 @@ export default function ForecastList() {
 			number: 4,
 		},
 	]);
+
+	const [location, setLocation] = useState();
+	const getLocation = async () => {
+		let { status } =
+			await Location.requestForegroundPermissionsAsync();
+		if (status !== "granted") {
+			console.log("permission not granted");
+			return;
+		}
+		let currentLocation = await Location.getCurrentPositionAsync(
+			{}
+		);
+		setLocation(currentLocation);
+	};
 
 	return (
 		<View style={{ height: "100%" }}>

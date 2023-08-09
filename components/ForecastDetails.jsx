@@ -1,14 +1,11 @@
 import { View, Text } from "react-native";
 
-export default function ForecastDetails({
-	temperature,
-	name,
-	number,
-}) {
+export default function ForecastDetails({ route }) {
+	const { name, temperature, number } = route.params;
 	return (
 		<View>
 			<Text>
-				{name} {temperature}
+				{name} - {temperature}
 			</Text>
 		</View>
 	);
